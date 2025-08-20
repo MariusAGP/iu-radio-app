@@ -1,4 +1,4 @@
-import {Text, View, TextInput, TouchableOpacity, FlatList, StyleSheet, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform} from "react-native";
+import {Text, View, TextInput, TouchableOpacity, FlatList, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform} from "react-native";
 import React, { useState } from "react";
 
 type Song = {
@@ -114,11 +114,11 @@ export default function RequestScreen() {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
      >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-        <View style={styles.container}>
+        <View className="flex-1 p-4 bg-background">
             {/* Suchleiste */}
-            <View style={styles.searchContainer}>
+            <View className="flex-row mb-3">
                 <TextInput
-                    style={styles.input}
+                    className="flex-1 border border-text-secondary px-3 py-2 rounded-2xl text-text-primary"
                     placeholder="Search Song..."
                     placeholderTextColor="#cdcdcd"
                     value={searchTerm}
@@ -143,70 +143,69 @@ export default function RequestScreen() {
                         }
                     }}
                     />
-                <TouchableOpacity style={styles.button} onPress={() => searchSongs(searchTerm)}>
-                    <Text style={styles.buttonText}>Search</Text>
-                </TouchableOpacity>
+                {(searchTerm.trim() === "" && !showResults) ? (
+                    //Fall: nichts angegeben + keine Ergebnisse sichtbar -> Search Button
+                    <TouchableOpacity className="ml-2 px-4 py-2 bg-primary rounded-2xl" onPress={() => searchSongs(searchTerm)}>
+                        <Text className="text-text-on-primary">Search</Text>
+                    </TouchableOpacity>
+                ) : (
+                    //Fall: entweder etwas eingegeben ODER alle Songs werden angezeigt -> Back Button
+                    <TouchableOpacity className="ml-2 px-4 py-2 bg-primary rounded-2xl" onPress={goBackToQueue}>
+                        <Text className="text-text-on-primary">Back</Text>
+                    </TouchableOpacity>
+                )}
             </View>
             {/* Suchergebnisse oder Queue abhängig vom State*/}
             {showResults ? (
              <>
-                <Text style={styles.heading}>Result</Text>
-                {result.length === 0 ? (
-                    <Text style={styles.emptyText}>No results</Text>
+            <View>
+                <Text className="text-lg font-bold text-text-primary mt-4 mb-2">Result</Text>
+            </View>
+            {result.length === 0 ? (
+                <View className="flex-row justify-between">
+                    <Text className="text-text-secondary">No results</Text>
+                    <TouchableOpacity className=" max-w-[50px] px-3 py-1 bg-primary rounded-2xl" onPress={goBackToQueue}>
+                        <Text className="text-text-on-primary" >Back</Text>
+                    </TouchableOpacity>
+                </View>
+            ) : (
+                <FlatList
+                    data={result}
+                    keyExtractor={(item) => item.id.toString()}
+                    renderItem={({ item }) => (
+                        <View className="flex-row justify-between items-center mt-2">
+                            <Text className="text-text-primary flex-1 mr-2">
+                                Titel: {item.title} - Artist: {item.artist} - Album: {item.album}
+                                </Text>
+                                <TouchableOpacity className="px-3 py-1 bg-primary rounded-2xl" onPress={() => addToQueue(item)}>
+                                    <Text className="text-text-on-primary">Add</Text>
+                                </TouchableOpacity>
+                            </View>
+                        )}
+                    />
+                )}
+            </>
+            ) : (
+                <>
+                {/* Warteschlange */}
+                <Text className="text-lg font-bold text-text-primary mt-4 mb-2">Next Songs in the Queue</Text>
+                {queue.length === 0 ? (
+                    <Text className="text-text-secondary">No songs in queue</Text>
                 ) : (
                     <FlatList
-                        data={result}
-                        keyExtractor={(item) => item.id.toString()}
-                        renderItem={({ item }) => (
-                            <View style={styles.songItem}>
-                                <Text style={styles.songText}>
-                                    Titel: {item.title} - Artist: {item.artist} - Album: {item.album}
-                                    </Text>
-                                    <TouchableOpacity style={styles.addButton} onPress={() => addToQueue(item)}>
-                                        <Text style={styles.buttonText}>Add</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            )}
-                        />
-                    )}
-                    <TouchableOpacity style={styles.backButton} onPress={goBackToQueue}>
-                        <Text style={styles.buttonText}>Back</Text>
-                    </TouchableOpacity>
-                </>
-                ) : (
-                    <>
-                    {/* Warteschlange */}
-                    <Text style={styles.heading}>Next Songs in the Queue</Text>
-                    {queue.length === 0 ? (
-                        <Text style={styles.emptyText}>No songs in queue</Text>
-                    ) : (
-                        <FlatList
-                        data={queue}
-                        keyExtractor={(item) => item.id.toString()}
-                        renderItem={({ item, index }) => (
-                            <Text style={styles.songText}>
-                                {index + 1}. {item.title} - {item.artist}
-                            </Text>
-                          )}
-                        />
-                    )}
-                   </>
+                    data={queue}
+                    keyExtractor={(item) => item.id.toString()}
+                    renderItem={({ item, index }) => (
+                        <Text className="text-text-primary">
+                            {index + 1}. {item.title} - {item.artist}
+                        </Text>
+                      )}
+                    />
                 )}
-                </View>
-               </TouchableWithoutFeedback>
-            </KeyboardAvoidingView>
-  );
+               </>
+            )}
+            </View>
+           </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
+    );
 }
-const styles = StyleSheet.create({
-    container: {flex: 1, padding: 16},
-    searchContainer: {flexDirection: "row", marginBottom: 12},
-    input: {flex: 1, borderWidth: 1, borderColor: "#cdcdcd", padding: 8, borderRadius: 20, color: "#cdcdcd"},
-    button: {backgroundColor: '#14532D', padding: 10, marginLeft: 8, borderRadius: 20},
-    buttonText: {color: "#cdcdcd"},
-    backButton: {backgroundColor: '#14532D', paddingVertical: 6, paddingHorizontal: 12, borderRadius: 20, alignSelf: 'flex-start'},
-    heading: {fontSize: 18, fontWeight: "bold", color: "#cdcdcd", marginTop: 16, marginBottom: 8},
-    emptyText: {color: "#cdcdcd"},
-    songItem: {flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: 8},
-    songText: {color: "#cdcdcd", flex: 1, marginRight: 8},
-    addButton: {backgroundColor: '#14532D', padding: 6, borderRadius: 20},
-})
