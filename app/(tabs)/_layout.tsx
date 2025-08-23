@@ -35,15 +35,6 @@ export default function TabLayout() {
                         tabBarIcon: ({ color }) => <Ionicons size={28} name="home" color={color} />,
                     }}
                 />
-                {/* Tab sollte nur für User sichtbar sein */}
-                <Tabs.Screen
-                    name="feedback"
-                    options={{
-                        sceneStyle: {backgroundColor: '#1A202C'},
-                        title: 'Feedback',
-                        tabBarIcon: ({ color }) => <Ionicons size={28} name="heart" color={color} />,
-                    }}
-                />
                 <Tabs.Screen
                     name="request"
                     options={{
