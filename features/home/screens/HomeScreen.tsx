@@ -4,6 +4,8 @@ import {useMusicStore} from "@/stores/musicStore";
 import {musicService} from "@/services/musicService";
 import * as Progress from 'react-native-progress';
 import {Ionicons} from "@expo/vector-icons";
+import {useAuth} from "@/contexts/AuthContext";
+import {useLogout} from "@/hooks/useLogout";
 
 export default function HomeScreen() {
     const {
@@ -12,6 +14,9 @@ export default function HomeScreen() {
         currentIndex,
         playlist
     } = useMusicStore();
+
+    const { user } = useAuth();
+    const { handleLogout } = useLogout();
 
     const [showFeedbackModal, setShowFeedbackModal] = useState(false);
     const [feedbackType, setFeedbackType] = useState<'song' | 'moderator'>('song');
@@ -64,6 +69,17 @@ export default function HomeScreen() {
 
     return (
         <View className="flex-1 bg-gradient-to-b from-gray-900 to-black">
+            {/* Profile info Header */}
+            <View className={"pt-2 px-6 flex-row items-center justify-between"}>
+                <Text className={"text-text-primary text-xl font-bold"}>Welcome, {user?.email}</Text>
+
+                <TouchableOpacity onPress={handleLogout}>
+                    <View className={"flex-row"}>
+                        <Text className={"text-text-primary text-xl mr-2 underline"}>Logout</Text>
+                        <Ionicons name={"log-out-outline"} size={24} color={"white"}/>
+                    </View>
+                </TouchableOpacity>
+            </View>
             {/* Header */}
             <View className="pt-16 pb-8 px-6">
                 <View className="flex-row items-center justify-between">
