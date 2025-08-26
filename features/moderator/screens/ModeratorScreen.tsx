@@ -1,4 +1,4 @@
-import {Text, View, FlatList, Alert} from "react-native";
+import {Text, View, FlatList} from "react-native";
 import {useFeedbackStore} from "@/stores/feedbackStore";
 
 export default function ModeratorScreen() {
