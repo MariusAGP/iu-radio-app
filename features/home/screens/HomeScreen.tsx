@@ -92,9 +92,9 @@ export default function HomeScreen() {
 
             setShowFeedbackModal(false);
             setFeedbackText('');
-            Alert.alert("Danke!", "Dein Feedback wurde gespeichert.");
+            Alert.alert("Thank you!", "Your feedback has been saved.");
         } else {
-            Alert.alert("Hinweis", "Bitte gib einen Text ein.");
+            Alert.alert("Note", "Please enter some text.");
         }
     };
 
@@ -107,7 +107,7 @@ export default function HomeScreen() {
             lastFeedbackIdRef.current = last.id;
             Notifications.scheduleNotificationAsync({
                 content: {
-                    title: "Neues Feedback vorhanden!",
+                    title: "New feedback available!",
                     body: last.text,
                     data: {feedbackId: last.id},
                 },
@@ -161,7 +161,7 @@ export default function HomeScreen() {
                         <View className="absolute inset-0 justify-center items-center px-6">
                             <View className="bg-surface rounded-xl p-6 w-full">
                                 <Text className="text-text-primary text-lg font-bold mb-2">
-                                    Feedback schreiben
+                                    Write Feedback
                                 </Text>
                                 <TextInput
                                     className="bg-background text-text-primary p-2 rounded-xl mb-4"
@@ -176,13 +176,13 @@ export default function HomeScreen() {
                                         onPress={submitFeedback}
                                         className="bg-primary px-4 py-2 rounded-xl mr-2"
                                     >
-                                        <Text className="text-text-on-primary">Senden</Text>
+                                        <Text className="text-text-on-primary">Send</Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity
                                         onPress={() => setShowFeedbackModal(false)}
                                         className="bg-background px-4 py-2 rounded-xl"
                                     >
-                                        <Text className="text-text-primary">Abbrechen</Text>
+                                        <Text className="text-text-primary">Cancel</Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>
